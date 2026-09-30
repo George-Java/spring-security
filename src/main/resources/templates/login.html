@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录</title>
+    <!-- 使用现代字体 Inter 和备用系统字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+    <style>
+        /* 全局重置与基础样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at 30% 20%, #1e2b3a, #0b0f15);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            color: #eef2f6;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 主卡片容器 — 玻璃质感 + 微光边框 */
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(18, 25, 35, 0.75);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 2rem;
+            padding: 2.5rem 2rem;
+            box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.6),
+            0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+            0 0 0 1px rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+        }
+
+        .login-card:hover {
+            box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.7),
+            0 0 0 1px rgba(120, 180, 255, 0.12) inset,
+            0 0 0 1px rgba(255, 255, 255, 0.03);
+        }
+
+        /* 品牌/标题区域 */
+        .brand {
+            text-align: center;
+            margin-bottom: 2.25rem;
+        }
+
+        .brand h1 {
+            font-size: 1.9rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffffff 0%, #b0c8e0 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+        }
+
+        .brand h1::before {
+            content: "⚡";
+            font-size: 1.9rem;
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            color: #6ea8fe;
+            filter: drop-shadow(0 0 8px rgba(110, 168, 254, 0.5));
+        }
+
+        .brand .sub {
+            color: #98a9bc;
+            font-size: 0.9rem;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+        }
+
+        /* 表单结构 */
+        .login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #b7c5d6;
+            letter-spacing: 0.3px;
+            padding-left: 0.25rem;
+        }
+
+        /* 输入框包装 — 带图标的现代样式 */
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(10, 16, 24, 0.6);
+            border-radius: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: #4c7cf0;
+            background: rgba(10, 16, 24, 0.9);
+            box-shadow: 0 0 0 4px rgba(76, 124, 240, 0.15);
+        }
+
+        .input-wrapper .icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 0.9rem;
+            color: #7f8fa3;
+            font-size: 1.1rem;
+            transition: color 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .input-wrapper:focus-within .icon {
+            color: #6ea8fe;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 1rem 1rem 1rem 0;
+            background: transparent;
+            border: none;
+            outline: none;
+            font-size: 0.98rem;
+            color: #f0f4fa;
+            font-family: inherit;
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #5e6f82;
+            font-weight: 300;
+            font-size: 0.92rem;
+        }
+
+        /* 去除 Chrome/Safari 自动填充的黄色背景 */
+        .input-wrapper input:-webkit-autofill,
+        .input-wrapper input:-webkit-autofill:hover,
+        .input-wrapper input:-webkit-autofill:focus,
+        .input-wrapper input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0 30px #0a1018 inset !important;
+            -webkit-text-fill-color: #f0f4fa !important;
+            transition: background-color 5000s ease-in-out 0s;
+        }
+
+        /* 登录按钮 */
+        .login-btn {
+            margin-top: 0.5rem;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #3b6ef0, #5b8cff);
+            border: none;
+            border-radius: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 20px -6px rgba(59, 110, 240, 0.5);
+            letter-spacing: 0.3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: inherit;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #4a7cf5, #6b9aff);
+            box-shadow: 0 12px 28px -6px rgba(59, 110, 240, 0.7);
+            transform: translateY(-1px);
+        }
+
+        .login-btn:active {
+            transform: translateY(0px);
+            box-shadow: 0 6px 16px -4px rgba(59, 110, 240, 0.6);
+        }
+
+        .login-btn:focus-visible {
+            outline: 2px solid #8aacff;
+            outline-offset: 2px;
+        }
+
+        /* 底部辅助信息 */
+        .form-footer {
+            text-align: center;
+            margin-top: 1.75rem;
+            color: #68788c;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 1.5rem;
+        }
+
+        .form-footer a {
+            color: #93b4ff;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .form-footer a:hover {
+            color: #b7ccff;
+            text-decoration: underline;
+        }
+
+        /* 响应式微调 */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 2rem 1.5rem;
+                border-radius: 1.5rem;
+            }
+
+            .brand h1 {
+                font-size: 1.7rem;
+            }
+
+            .input-wrapper input {
+                padding: 0.9rem 0.9rem 0.9rem 0;
+                font-size: 0.95rem;
+            }
+
+            .login-btn {
+                padding: 0.9rem 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="login-card">
+    <div class="brand">
+        <h1>Spring Security</h1>
+        <div class="sub">登录到您的账户</div>
+    </div>
+
+    <!-- 表单：POST 到 /user/login，包含用户名和密码 -->
+    <form class="login-form" action="/login" method="post">
+        <div class="input-group">
+            <label for="username">用户名</label>
+            <div class="input-wrapper">
+                <span class="icon">👤</span>
+                <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="请输入用户名"
+                        autocomplete="username"
+                        required
+                        autofocus
+                >
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label for="password">密码</label>
+            <div class="input-wrapper">
+                <span class="icon">🔒</span>
+                <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="请输入密码"
+                        autocomplete="current-password"
+                        required
+                >
+            </div>
+        </div>
+
+        <input name="_csrf" type="hidden" th:value="${_csrf.token}"/>
+
+        <button type="submit" class="login-btn">
+            <span>登 录</span>
+            <span style="font-size: 1.1rem;">→</span>
+        </button>
+    </form>
+
+    <div class="form-footer">
+        <span>遇到问题？ </span>
+        <a href="#">联系管理员</a>
+    </div>
+</div>
+</body>
+</html>
