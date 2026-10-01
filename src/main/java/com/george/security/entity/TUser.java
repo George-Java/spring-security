@@ -4,18 +4,23 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("t_user")
-public class TUser {
-
+public class TUser implements UserDetails {
     @TableId(value = "id", type = IdType.AUTO)
     private int id;
 
@@ -23,12 +28,18 @@ public class TUser {
     private String loginAct;
 
     @TableField("login_pwd")
+    @JsonIgnore
     private String loginPwd;
 
+    @TableField("name")
     private String name;
 
+    @TableField("phone")
+    @JsonIgnore
     private String phone;
 
+    @TableField("email")
+    @JsonIgnore
     private String email;
 
     @TableField("account_no_expired")
@@ -44,17 +55,57 @@ public class TUser {
     private int accountEnabled;
 
     @TableField("create_time")
+    @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss")
     private LocalDateTime createTime;
 
     @TableField("create_by")
     private int createBy;
 
     @TableField("edit_time")
+    @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss")
     private LocalDateTime editTime;
 
     @TableField("edit_by")
     private int editBy;
 
     @TableField("last_login_time")
+    @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss")
     private LocalDateTime lastLoginTime;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    @Override
+    @JsonIgnore
+    public String getPassword() {
+        return this.loginPwd;
+    }
+
+    @Override
+    @JsonIgnore
+    public String getUsername() {
+        return this.loginAct;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return this.accountNoExpired == 1;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.accountNoLocked == 1;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.accountEnabled == 1;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return this.credentialsNoExpired == 1;
+    }
 }

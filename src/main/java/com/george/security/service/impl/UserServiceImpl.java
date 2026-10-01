@@ -5,8 +5,6 @@ import com.george.security.entity.TUser;
 import com.george.security.mapper.TUserMapper;
 import com.george.security.service.UserService;
 import lombok.NonNull;
-import org.springframework.security.core.authority.AuthorityUtils;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -15,11 +13,6 @@ import org.springframework.stereotype.Service;
 public class UserServiceImpl extends ServiceImpl<TUserMapper, TUser> implements UserService {
     @Override
     public UserDetails loadUserByUsername(@NonNull String username) throws UsernameNotFoundException {
-        TUser user = lambdaQuery().eq(TUser::getLoginAct, username).one();
-        return User.builder()
-                .username(user.getLoginAct())
-                .password(user.getLoginPwd())
-                .authorities(AuthorityUtils.NO_AUTHORITIES)
-                .build();
+        return lambdaQuery().eq(TUser::getLoginAct, username).one();
     }
 }

@@ -1,6 +1,11 @@
 spring:
   application:
     name: spring-security
+
+  jackson:
+    time-zone: GMT+8
+    date-format: yyyy年MM月dd日 HH:mm:ss
+
   datasource:
     url: "jdbc:mysql://localhost:3306/dlyk"
     driver-class-name: com.mysql.cj.jdbc.Driver
