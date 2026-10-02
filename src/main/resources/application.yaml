@@ -4,7 +4,8 @@ spring:
 
   jackson:
     time-zone: GMT+8
-    date-format: yyyy年MM月dd日 HH:mm:ss
+  #    date-format全局配置只对Date、Calendar等生效,对LocalDateTime等无效,只能使用@JsonFormat注解
+  #    date-format: yyyy年MM月dd日 HH:mm:ss
 
   datasource:
     url: "jdbc:mysql://localhost:3306/dlyk"
@@ -26,5 +27,6 @@ mybatis-plus:
   configuration:
     lazy-loading-enabled: true
     map-underscore-to-camel-case: true
-#  mapper-locations:
-#    - classpath*:/mapper/**/*.xml
+  mapper-locations:
+    - classpath*:/mapper/**/*.xml
+  type-aliases-package: com.george.security.entity

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.george.security.mapper.TPermissionMapper">
+    <select id="selectPermissionsByUserId" parameterType="int" resultType="TPermission">
+        SELECT tp.*
+        FROM t_permission AS tp
+                 LEFT JOIN t_role_permission AS trp ON tp.id = trp.permission_id
+        WHERE trp.role_id = (SELECT tr.id
+                             FROM t_user AS tu
+                                      LEFT JOIN t_user_role AS tur ON tu.id = tur.user_id
+                                      LEFT JOIN t_role AS tr ON tr.id = tur.role_id
+                             WHERE tu.id = #{userId});
+    </select>
+</mapper>

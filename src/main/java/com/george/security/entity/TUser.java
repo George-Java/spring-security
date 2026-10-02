@@ -10,11 +10,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -72,9 +74,28 @@ public class TUser implements UserDetails {
     @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss")
     private LocalDateTime lastLoginTime;
 
+    @JsonIgnore
+    @TableField(exist = false)
+    private List<TRole> roleList;
+
+    @JsonIgnore
+    @TableField(exist = false)
+    private List<TPermission> permissionList;
+
+
+
+    // 实现UserDetails中的方法
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of();
+        // 返回用户角色
+        //return this.roleList.stream()
+        //        .map(r -> new SimpleGrantedAuthority("ROLE_" + r.getRole()))
+        //        .collect(Collectors.toList());
+
+        // 返回用户权限控制符
+        return this.permissionList.stream()
+                .map(p -> new SimpleGrantedAuthority(p.getCode()))
+                .collect(Collectors.toList());
     }
 
     @Override
