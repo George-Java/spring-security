@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -83,7 +84,6 @@ public class TUser implements UserDetails {
     private List<TPermission> permissionList;
 
 
-
     // 实现UserDetails中的方法
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -94,7 +94,9 @@ public class TUser implements UserDetails {
 
         // 返回用户权限控制符
         return this.permissionList.stream()
-                .map(p -> new SimpleGrantedAuthority(p.getCode()))
+                .map(TPermission::getCode)
+                .filter(StringUtils::hasText)
+                .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }
 
